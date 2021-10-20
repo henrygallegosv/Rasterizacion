@@ -25,15 +25,19 @@ void COpenGL::Ejecutar(int argc, char **argv) {
 void COpenGL::Setup(void) {
 	// Cor de fondo.
 	glClearColor(1.0, 1.0, 1.0, 0.0);
+	//angulox = 0;
 }
 
 void COpenGL::display(void) {
    glClear(GL_COLOR_BUFFER_BIT);
    glColor3f(0.0, 0.0, 0.0);
+   glMatrixMode(GL_MODELVIEW);
    glLoadIdentity(); 
    
    // Modeling transformations.
-   glTranslatef(0.0, 0.0, -8.0); 
+   glTranslatef(0.0, 0.0, -8.0);
+
+   //glRotatef(angulox, 1., 0., 0.);
 
    glutWireCube(5.0); // Box.
    //glutSolidSphere(4.0,100.0,10.0);
@@ -48,14 +52,12 @@ void COpenGL::reshape(int width, int height) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glFrustum(-5.0, 5.0, -5.0, 5.0, 5.0, 100.0);
-
-	glMatrixMode(GL_MODELVIEW);
 }
 
 void COpenGL::keyboard(unsigned char key, int x, int y) {
 	switch(key) {
 	case '2':
-		glRotatef(1.0, 1., 0., 0.);
+		//angulox += 1.0;
 		break;
 	case 27:
 		exit(0);

@@ -39,8 +39,7 @@ void setup(void) {
 }
 
 // OpenGL window reshape routine.
-void resize(int w, int h) {
-	h = w = w < h ? w : h;
+void resize(int w, int h) {h = w = w < h ? w : h;
    glViewport(0, 0, (GLsizei)w, (GLsizei)h); 
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();

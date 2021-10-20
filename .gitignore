@@ -1,3 +1,11 @@
+E1-basico/cmake-build-debug/
+E1-basico/.idea/
+E1-basico/.vscode/
+
+Frustum/cmake-build-debug/
+Frustum/.idea/
+Frustum/.vscode/
+
 # Prerequisites
 *.d
 

@@ -9,6 +9,7 @@ class COpenGL {
 
 public:
 	cono co;
+	//static float angulox;
 
 	static void display(void);
 	static void reshape(int width, int height);
