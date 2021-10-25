@@ -6,6 +6,11 @@ Frustum/cmake-build-debug/
 Frustum/.idea/
 Frustum/.vscode/
 
+ModeloPLY/cmake-build-debug/
+ModeloPLY/.idea/
+ModeloPLY/.vscode/
+
+
 # Prerequisites
 *.d
 
