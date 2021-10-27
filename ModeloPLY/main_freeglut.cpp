@@ -9,7 +9,7 @@ Model_PLY model;
 char *archivo = "../models/cow.ply";
 
 GLuint p1_id;
-GLint vertex_id = 0;
+GLint vertex_id = 0, normal_id = 1;
 
 char* readShader(char* aShaderFile)
 {
@@ -100,7 +100,9 @@ void setup(void) {
     glEnable(GL_DEPTH_TEST);
     CreateShaderProgram("../basico1.vs","../basico1.fs", p1_id);
     glBindAttribLocation(p1_id, vertex_id, "aPos");
+    glBindAttribLocation(p1_id, normal_id, "aNormal");
     cout << "aPos: " << vertex_id;
+    cout << "aNormal: " << normal_id;
 }
 
 // Drawing routine.
@@ -113,11 +115,14 @@ void drawScene(void) {
     glUseProgram(p1_id);
     glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
     glEnableVertexAttribArray(vertex_id);
+    glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
+    glEnableVertexAttribArray(normal_id);
 
     //glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
     glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);
 
     glDisableVertexAttribArray(vertex_id);
+    glDisableVertexAttribArray(normal_id);
     glutSwapBuffers();
 }
 
