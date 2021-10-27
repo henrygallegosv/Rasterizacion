@@ -1,5 +1,6 @@
 #include <iostream>
 #include <GL/glew.h>
+//#include <glad/glad.h>
 #include <GL/freeglut.h>
 #include "glut_ply.h"
 
@@ -159,6 +160,13 @@ int main(int argc, char **argv) {
 
     glewExperimental = GL_TRUE;
     glewInit();
+    // glad: load all OpenGL function pointers
+    // ---------------------------------------
+    /*if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }*/
 
     setup();
 
