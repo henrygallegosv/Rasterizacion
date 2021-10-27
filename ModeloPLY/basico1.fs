@@ -12,4 +12,5 @@ void main() {
    //float kd = 0.8;
    //FragColor = color.rgb * colorLuz * kd * dot(posicion.xyz, normal);
    FragColor = vec4(colorFinal, 1.0f);
+   //FragColor = colorFinal;
 }

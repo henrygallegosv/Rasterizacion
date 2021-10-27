@@ -12,9 +12,11 @@ void main()
    //posicion = aPos;
    //normal = aNormal;
 
-   vec3 posicionLuz = vec3(10., 10., 10.);
+   vec3 posicionLuz = vec3(1., 1., -10.);
    vec3 colorLuz = vec3(1., 1., 1.);
    vec4 color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
    float kd = 0.8;
-   colorFinal = color.rgb * colorLuz * kd * dot(posicionLuz - aPos, aNormal);
+   float diff = max(0.0, dot(normalize(posicionLuz - aPos), aNormal));
+   colorFinal = color.rgb * colorLuz * kd * diff;
+   //colorFinal = clamp(colorFinal);
 }
