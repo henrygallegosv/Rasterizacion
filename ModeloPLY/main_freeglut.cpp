@@ -3,6 +3,8 @@
 #include <GL/freeglut.h>
 #include "glut_ply.h"
 
+using namespace std;
+
 Model_PLY model;
 char *archivo = "../models/cow.ply";
 
@@ -98,7 +100,7 @@ void setup(void) {
     glEnable(GL_DEPTH_TEST);
     CreateShaderProgram("../basico1.vs","../basico1.fs", p1_id);
     glBindAttribLocation(p1_id, vertex_id, "aPos");
-
+    cout << "aPos: " << vertex_id;
 }
 
 // Drawing routine.
@@ -108,7 +110,8 @@ void drawScene(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 0, model.Vertices);
+    glUseProgram(p1_id);
+    glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
     glEnableVertexAttribArray(vertex_id);
 
     //glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
