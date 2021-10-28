@@ -124,10 +124,11 @@ void drawScene(void) {
 
     matrix_model.identity();
     matrix_model.escala(0.2, 0.2,0.2);
-    matrix_model.traslacion(0.5,0.5,0.5);
+    //matrix_model.traslacion(0.5,0.5,0.5);
     matrix_model.print();
 
     matrix_model.rotacion(angulo_x, 0, 0);
+    matrix_model.print();
 
     GLboolean transpose = GL_FALSE;
 
@@ -155,13 +156,11 @@ void resize(int w, int h) {
 // Keyboard input processing routine.
 void keyInput(unsigned char key, int x, int y) {
     switch (key) {
-        case 27:
-            exit(0);
-            break;
-        case 'a':
-            angulo_x++;
+        case 27: exit(0);
+        case 'a': angulo_x++; break;
+        case 'A': angulo_x--; break;
     }
-
+    glutPostRedisplay();
 }
 
 // Main routine.
