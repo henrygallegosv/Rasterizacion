@@ -15,6 +15,7 @@ char *archivo = "../models/cow.ply";
 GLuint p1_id;
 GLint vertex_id = 0, normal_id = 1;
 GLuint matrix_model_id;
+float angulo_x;
 
 mat4 matrix_model;
 
@@ -103,14 +104,15 @@ static void CreateShaderProgram (char* vertexShaderFile, char* fragmentShaderFil
 // Initialization routine.
 void setup(void) {
     glClearColor(1.0, 1.0, 1.0, 0.0);
+    angulo_x = 40.;
 
     glEnableClientState(GL_VERTEX_ARRAY); // Enable vertex array.
     glEnable(GL_DEPTH_TEST);
     CreateShaderProgram("../basico1.vs","../basico1.fs", p1_id);
     glBindAttribLocation(p1_id, vertex_id, "aPos");
     glBindAttribLocation(p1_id, normal_id, "aNormal");
-    cout << "aPos: " << vertex_id;
-    cout << "aNormal: " << normal_id;
+    cout << "aPos: " << vertex_id << endl;
+    cout << "aNormal: " << normal_id << endl;
     matrix_model_id	= glGetUniformLocation(p1_id, "matrix_model");
 }
 
@@ -120,8 +122,13 @@ void drawScene(void) {
     glGetIntegerv(GL_VIEWPORT, vp);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    matrix_model.indentity();
-    matrix_model.traslacion(5,4,5);
+    matrix_model.identity();
+    matrix_model.escala(0.2, 0.2,0.2);
+    matrix_model.traslacion(0.5,0.5,0.5);
+    matrix_model.print();
+
+    matrix_model.rotacion(angulo_x, 0, 0);
+
     GLboolean transpose = GL_FALSE;
 
     glUseProgram(p1_id);
@@ -151,7 +158,10 @@ void keyInput(unsigned char key, int x, int y) {
         case 27:
             exit(0);
             break;
+        case 'a':
+            angulo_x++;
     }
+
 }
 
 // Main routine.
