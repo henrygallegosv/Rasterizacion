@@ -3,8 +3,9 @@
 //#include <glad/glad.h>
 #include <GL/freeglut.h>
 #include "glut_ply.h"
+#include "cgmath.h"
 
-
+#include "../matrices/cgmath.h"
 
 using namespace std;
 
@@ -13,6 +14,10 @@ char *archivo = "../models/cow.ply";
 
 GLuint p1_id;
 GLint vertex_id = 0, normal_id = 1;
+GLuint matrix_model_id;
+
+mat4 matrix_model;
+
 
 char* readShader(char* aShaderFile)
 {
@@ -106,6 +111,7 @@ void setup(void) {
     glBindAttribLocation(p1_id, normal_id, "aNormal");
     cout << "aPos: " << vertex_id;
     cout << "aNormal: " << normal_id;
+    matrix_model_id	= glGetUniformLocation(p1_id, "matrix_model");
 }
 
 // Drawing routine.
@@ -114,12 +120,17 @@ void drawScene(void) {
     glGetIntegerv(GL_VIEWPORT, vp);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    matrix_model.indentity();
+    matrix_model.traslacion(5,4,5);
+    GLboolean transpose = GL_FALSE;
 
     glUseProgram(p1_id);
     glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
     glEnableVertexAttribArray(vertex_id);
     glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
     glEnableVertexAttribArray(normal_id);
+
+    glUniformMatrix4fv(matrix_model_id, 1, transpose, matrix_model.mat);
 
     //glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
     glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);

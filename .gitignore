@@ -10,6 +10,10 @@ ModeloPLY/cmake-build-debug/
 ModeloPLY/.idea/
 ModeloPLY/.vscode/
 
+matrices/cmake-build-debug/
+matrices/.idea/
+matrices/.vscode/
+
 
 # Prerequisites
 *.d
