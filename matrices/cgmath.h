@@ -25,6 +25,8 @@ public:
         }
     }
     void identity(){
+        for (int i=0; i<16; i++)
+            mat[i] = 0.0;
         for (int i=0; i<4; i++)
             mat[4*i+i] = 1.0;
     }
@@ -54,6 +56,7 @@ public:
                 }
             }
         }
+        delete [] mat;
         mat = tmp;
     }
 
