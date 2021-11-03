@@ -18,7 +18,7 @@ GLuint matrix_model_id;
 float angulo_x;
 float escala, tras_x;
 
-mat4 matrix_model;
+mat4 matrix_model, matrix_view;
 
 
 char* readShader(char* aShaderFile)
@@ -109,6 +109,8 @@ void setup(void) {
     tras_x = 0;
     escala = 0.3;
 
+    matrix_view.lookAt(10, 10, 10, 0, 0, 0, 0, 1, 0);
+
     glEnableClientState(GL_VERTEX_ARRAY); // Enable vertex array.
     glEnable(GL_DEPTH_TEST);
     CreateShaderProgram("../basico1.vs","../basico1.fs", p1_id);
@@ -136,6 +138,8 @@ void drawScene(void) {
 
     matrix_model.rotacion(angulo_x, 0, 0);
     matrix_model.print();
+
+    matrix_model.multiplicacion( matrix_view );
 
     GLboolean transpose = GL_FALSE;
 

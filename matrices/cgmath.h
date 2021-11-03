@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cmath>
+#include "vector.h"
 using namespace std;
 
 #define ANG2RAD 3.14159265358979323846/180.0
@@ -24,6 +25,43 @@ public:
             cout << "\n";
         }
     }
+
+
+    void lookAt(double eyex, double eyey, double eyez,
+                double centerx, double centery, double centerz,
+                double upx, double upy, double upz) {
+        mat4 traslacion;
+        traslacion.identity();
+        traslacion.traslacion(eyex, eyey, eyez);
+        vec3f vecz(eyex - centerx, eyey - centery, eyez - centerz);
+        vecz.normalize();
+        vec3f up(upx, upy, upz);
+        vec3f vecx = up.productoCruz( vecz );
+        vecx.normalize();
+        vec3f vecy = vecz.productoCruz( vecx );
+
+
+        mat[0] = vecx.x;
+        mat[1] = vecx.y;
+        mat[2] = vecx.z;
+
+        mat[4] = vecy.x;
+        mat[5] = vecy.y;
+        mat[6] = vecy.z;
+
+        mat[8] = vecz.x;
+        mat[9] = vecz.y;
+        mat[10] = vecz.z;
+
+        mat[15] = 1.;
+        multiplicacion( traslacion );
+    }
+
+
+
+
+
+
     void identity(){
         for (int i=0; i<16; i++)
             mat[i] = 0.0;
