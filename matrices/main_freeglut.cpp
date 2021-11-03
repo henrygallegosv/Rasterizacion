@@ -16,6 +16,7 @@ GLuint p1_id;
 GLint vertex_id = 0, normal_id = 1;
 GLuint matrix_model_id;
 float angulo_x;
+float escala, tras_x;
 
 mat4 matrix_model;
 
@@ -105,6 +106,8 @@ static void CreateShaderProgram (char* vertexShaderFile, char* fragmentShaderFil
 void setup(void) {
     glClearColor(1.0, 1.0, 1.0, 0.0);
     angulo_x = 40.;
+    tras_x = 0;
+    escala = 0.3;
 
     glEnableClientState(GL_VERTEX_ARRAY); // Enable vertex array.
     glEnable(GL_DEPTH_TEST);
@@ -123,8 +126,12 @@ void drawScene(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     matrix_model.identity();
-    matrix_model.escala(0.2, 0.2,0.2);
-    //matrix_model.traslacion(0.5,0.5,0.5);
+    matrix_model.escala(escala, escala,escala);
+
+    mat4 matrix_traslacion;
+    matrix_traslacion.identity();
+    matrix_traslacion.traslacion(tras_x,0,0);
+    matrix_model.multiplicacion( matrix_traslacion );
     matrix_model.print();
 
     matrix_model.rotacion(angulo_x, 0, 0);
@@ -157,8 +164,12 @@ void resize(int w, int h) {
 void keyInput(unsigned char key, int x, int y) {
     switch (key) {
         case 27: exit(0);
-        case 'a': angulo_x++; break;
-        case 'A': angulo_x--; break;
+        case 'A': angulo_x++; break;
+        case 'a': angulo_x--; break;
+        case 'S': escala += 0.1; break;
+        case 's': escala -= 0.1; break;
+        case 'X': tras_x += 0.1; break;
+        case 'x': tras_x -= 0.1; break;
     }
     glutPostRedisplay();
 }

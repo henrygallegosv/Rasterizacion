@@ -4,7 +4,7 @@ layout (location = 1) in vec3 aNormal;
 
 uniform mat4 matrix_model;
 
-out vec3 normal;
+out vec4 normal;
 out vec4 posicion;
 //out vec3 colorFinal;
 
@@ -13,7 +13,8 @@ void main()
    posicion = matrix_model * vec4(aPos, 1.0);
    gl_Position = posicion;
 
-   normal = aNormal;
+   normal = matrix_model * vec4(aNormal, 1.0);
+   normal = normalize(normal);
 
    // iluminacion difusa en vertex shader
    //vec3 posicionLuz = vec3(1., 1., -10.);
