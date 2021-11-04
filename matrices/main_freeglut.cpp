@@ -139,7 +139,7 @@ void drawScene(void) {
     matrix_model.rotacion(angulo_x, 0, 0);
     matrix_model.print();
 
-    matrix_model.multiplicacion( matrix_view );
+    //matrix_model.multiplicacion( matrix_view );
 
     GLboolean transpose = GL_FALSE;
 

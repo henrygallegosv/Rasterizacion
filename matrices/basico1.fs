@@ -13,7 +13,7 @@ void main() {
    vec4 color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
    float kd = 0.8;
 
-   float diff = max(0.0, dot(normalize(posicionLuz - posicion.xyz), normal.xyz));
+   float diff = max(0.0, dot(normalize(posicionLuz - posicion.xyz/posicion.w), normal.xyz/normal.w));
    FragColor = vec4(color.rgb * colorLuz * kd * diff, 1.0);
 
    //FragColor = vec4(colorFinal, 1.0f);

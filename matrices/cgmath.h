@@ -32,7 +32,7 @@ public:
                 double upx, double upy, double upz) {
         mat4 traslacion;
         traslacion.identity();
-        traslacion.traslacion(eyex, eyey, eyez);
+        traslacion.traslacion(-eyex, -eyey, -eyez);
         vec3f vecz(eyex - centerx, eyey - centery, eyez - centerz);
         vecz.normalize();
         vec3f up(upx, upy, upz);
