@@ -1,0 +1,3 @@
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/cmake-build-debug/CMakeFiles/MatricesGLM.dir
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/cmake-build-debug/CMakeFiles/edit_cache.dir

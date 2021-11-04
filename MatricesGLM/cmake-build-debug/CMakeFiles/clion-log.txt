@@ -1,0 +1,4 @@
+D:\AplicacionesPortables\CLion-2020.2.3.win\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" D:\workspace\CG20212-Rasterizacion\Rasterizacion\MatricesGLM
+-- Configuring done
+-- Generating done
+-- Build files have been written to: D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/cmake-build-debug

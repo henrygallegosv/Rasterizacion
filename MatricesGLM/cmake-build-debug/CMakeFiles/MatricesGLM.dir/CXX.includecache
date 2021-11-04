@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.cpp
+glut_ply.h
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.h
+iostream
+-
+stdio.h
+-
+string.h
+-
+cmath
+-
+string
+-
+iostream
+-
+fstream
+-
+
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.h
+GL/gl.h
+-
+GL/glu.h
+-
+GL/freeglut.h
+-
+vector
+-
+
