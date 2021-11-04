@@ -8,7 +8,7 @@ out vec4 FragColor;
 
 void main() {
    vec3 colorLuz = vec3(1., 1., 1.);
-   vec3 posicionLuz = vec3(1., 1., -10.);
+   vec3 posicionLuz = vec3(1., 1., 10.);
 
    vec4 color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
    float kd = 0.8;

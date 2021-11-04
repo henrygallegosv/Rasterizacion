@@ -14,11 +14,12 @@ char *archivo = "../models/cow.ply";
 
 GLuint p1_id;
 GLint vertex_id = 0, normal_id = 1;
-GLuint matrix_model_id;
+GLuint matrix_model_id, matrix_view_id, matrix_projection_id;
 float angulo_x;
 float escala, tras_x;
-
-glm::mat4 matrix_model = glm::mat4(1.0f); //matrix_view;
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+ //matrix_view;
 
 
 char* readShader(char* aShaderFile)
@@ -119,6 +120,8 @@ void setup(void) {
     cout << "aPos: " << vertex_id << endl;
     cout << "aNormal: " << normal_id << endl;
     matrix_model_id	= glGetUniformLocation(p1_id, "matrix_model");
+    matrix_view_id	= glGetUniformLocation(p1_id, "matrix_view");
+    matrix_projection_id	= glGetUniformLocation(p1_id, "matrix_projection");
 }
 
 // Drawing routine.
@@ -127,9 +130,15 @@ void drawScene(void) {
     glGetIntegerv(GL_VIEWPORT, vp);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+    glm::mat4 matrix_model = glm::mat4(1.0f);
     matrix_model = glm::translate(matrix_model, glm::vec3(tras_x, 0, 0));
-    matrix_model = glm::rotate(matrix_model, angulo_x, glm::vec3(1,0,0));
+    matrix_model = glm::scale(matrix_model, glm::vec3(escala, escala, escala));
+    matrix_model = glm::rotate(matrix_model, glm::radians(angulo_x), glm::vec3(1,0,0));
+
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.,0., -10.));
+    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
     GLboolean transpose = GL_FALSE;
 
@@ -140,6 +149,8 @@ void drawScene(void) {
     glEnableVertexAttribArray(normal_id);
 
     glUniformMatrix4fv(matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
+    glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
+    glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
 
     //glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
     glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);

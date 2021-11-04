@@ -6,24 +6,6 @@
 
 #IncludeRegexTransform: 
 
-D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.cpp
-glut_ply.h
-D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.h
-iostream
--
-stdio.h
--
-string.h
--
-cmath
--
-string
--
-iostream
--
-fstream
--
-
 D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.h
 GL/gl.h
 -
@@ -32,5 +14,21 @@ GL/glu.h
 GL/freeglut.h
 -
 vector
+-
+
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/main.cpp
+iostream
+-
+GL/glew.h
+-
+GL/freeglut.h
+-
+glut_ply.h
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.h
+glm/glm.hpp
+-
+glm/gtc/matrix_transform.hpp
+-
+glm/gtc/type_ptr.hpp
 -
 
