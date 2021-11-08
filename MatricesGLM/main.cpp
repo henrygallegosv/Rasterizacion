@@ -17,6 +17,7 @@ GLint vertex_id = 0, normal_id = 1;
 GLuint matrix_model_id, matrix_view_id, matrix_projection_id;
 float angulo_x;
 float escala, tras_x;
+float camX, camZ;
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
  //matrix_view;
@@ -109,6 +110,8 @@ void setup(void) {
     angulo_x = 40.;
     tras_x = 0;
     escala = 0.3;
+    camX = 20.;
+    camZ = 20.;
 
     //matrix_view.lookAt(10, 10, 10, 0, 0, 0, 0, 1, 0);
 
@@ -137,7 +140,12 @@ void drawScene(void) {
 
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.,0., -10.));
+
+    //view = glm::translate(view, glm::vec3(0.,0., -10.));
+    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0,0,0), glm::vec3(0,1,0));
+
+
+
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
     GLboolean transpose = GL_FALSE;
@@ -175,6 +183,10 @@ void keyInput(unsigned char key, int x, int y) {
         case 's': escala -= 0.1; break;
         case 'X': tras_x += 0.1; break;
         case 'x': tras_x -= 0.1; break;
+        case 'C': camX += 1; break;
+        case 'c': camX -= 1; break;
+        case 'V': camZ += 1; break;
+        case 'v': camZ -= 1; break;
     }
     glutPostRedisplay();
 }
