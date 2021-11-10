@@ -18,6 +18,10 @@ LearnOpenGL/cmake-build-debug/
 LearnOpenGL/.idea/
 LearnOpenGL/.vscode/
 
+balonTorus/cmake-build-debug/
+balonTorus/.idea/
+balonTorus/.vscode/
+
 # Prerequisites
 *.d
 
