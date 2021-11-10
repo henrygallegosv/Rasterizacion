@@ -2,5 +2,6 @@
 #define SHADER_H
 
 int setShader(char* shaderType, char* shaderFile);
+void Error(char *message);
 
 #endif

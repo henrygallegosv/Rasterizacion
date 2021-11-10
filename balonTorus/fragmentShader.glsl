@@ -1,4 +1,4 @@
-#version 430 core
+#version 330
 
 #define HEMISPHERE 0
 #define TORUS 1

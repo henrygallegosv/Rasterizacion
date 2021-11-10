@@ -32,6 +32,26 @@ char* readTextFile(char* aTextFile)
    return content;
 }
 
+void Error(char *message) {
+    printf(message);
+}
+
+/* Compila shader */
+void CompileShader (GLuint id) {
+    GLint status;
+    glCompileShader(id);
+    glGetShaderiv(id, GL_COMPILE_STATUS, &status);
+    if (!status) {
+        GLint len;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &len);
+        char* message = (char*) malloc(len*sizeof(char));
+        glGetShaderInfoLog(id, len, 0, message);
+        Error(message);
+        free(message);
+    }
+}
+
+
 // Function to initialize shaders.
 int setShader(char* shaderType, char* shaderFile)
 {
@@ -45,7 +65,8 @@ int setShader(char* shaderType, char* shaderFile)
    if (shaderType == "fragment") shaderId = glCreateShader(GL_FRAGMENT_SHADER); 
 
    glShaderSource(shaderId, 1, (const char**) &shader, NULL); 
-   glCompileShader(shaderId); 
+   //glCompileShader(shaderId);
+   CompileShader(shaderId);
 
    return shaderId;
 }

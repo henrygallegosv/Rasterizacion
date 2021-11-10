@@ -20,6 +20,9 @@ float escala, tras_x;
 float camX, camZ;
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+GLint POSITION_ATTRIBUTE=0, NORMAL_ATTRIBUTE=1, TEXCOORD0_ATTRIBUTE=8;
+GLint sphere_vao;
+int numIndicies;
  //matrix_view;
 
 
@@ -103,6 +106,74 @@ static void CreateShaderProgram (char* vertexShaderFile, char* fragmentShaderFil
 
 }
 
+GLuint SolidSphere( float radius, int slices, int stacks ) {
+    using namespace glm;
+    using namespace std;
+    const float pi = 3.1415926535897932384626433832795f;
+    const float _2pi = 2.0f * pi;
+    vector<vec3> positions;
+    vector<vec3> normals;
+    vector<vec2> textureCoords;
+    for( int i = 0; i <= stacks; ++i )
+    {
+        // V texture coordinate.
+        float V = i / (float)stacks;
+        float phi = V * pi;
+        for ( int j = 0; j <= slices; ++j )
+        {
+            // U texture coordinate.
+            float U = j / (float)slices;
+            float theta = U * _2pi;
+            float X = cos(theta) * sin(phi);
+            float Y = cos(phi);
+            float Z = sin(theta) * sin(phi);
+            positions.push_back( vec3( X, Y, Z) * radius );
+            normals.push_back( vec3(X, Y, Z) );
+            textureCoords.push_back( vec2(U, V) );
+        }
+    }
+    // Now generate the index buffer
+    vector<GLuint> indicies;
+    for( int i = 0; i < slices * stacks + slices; ++i ) {
+        indicies.push_back( i );
+        indicies.push_back( i + slices + 1  );
+        indicies.push_back( i + slices );
+        indicies.push_back( i + slices + 1  );
+        indicies.push_back( i );
+        indicies.push_back( i + 1 );
+    }
+
+    GLuint vao;
+    glGenVertexArrays( 1, &vao );
+    glBindVertexArray( vao );
+
+    GLuint vbos[3];
+    glGenBuffers( 3, vbos );
+
+    glBindBuffer( GL_ARRAY_BUFFER, vbos[0] );
+    glBufferData( GL_ARRAY_BUFFER, positions.size() * sizeof(vec3), positions.data(), GL_STATIC_DRAW );
+    glVertexAttribPointer( POSITION_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray( POSITION_ATTRIBUTE );
+
+    glBindBuffer( GL_ARRAY_BUFFER, vbos[1] );
+    glBufferData( GL_ARRAY_BUFFER, normals.size() * sizeof(vec3), normals.data(), GL_STATIC_DRAW );
+    glVertexAttribPointer( NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_TRUE, 0, (void*)0 );
+    glEnableVertexAttribArray( NORMAL_ATTRIBUTE );
+
+    //glBindBuffer( GL_ARRAY_BUFFER, vbos[2] );
+    //glBufferData( GL_ARRAY_BUFFER, textureCoords.size() * sizeof(vec2), textureCoords.data(), GL_STATIC_DRAW );
+    //glVertexAttribPointer( TEXCOORD0_ATTRIBUTE, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
+    //glEnableVertexAttribArray( TEXCOORD0_ATTRIBUTE );
+
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vbos[2] );
+    glBufferData( GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(GLuint), indicies.data(), GL_STATIC_DRAW );
+    glBindVertexArray( 0 );
+    glBindBuffer( GL_ARRAY_BUFFER, 0 );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+    return vao;
+}
+
+
 
 // Initialization routine.
 void setup(void) {
@@ -125,6 +196,12 @@ void setup(void) {
     matrix_model_id	= glGetUniformLocation(p1_id, "matrix_model");
     matrix_view_id	= glGetUniformLocation(p1_id, "matrix_view");
     matrix_projection_id	= glGetUniformLocation(p1_id, "matrix_projection");
+
+    int slices = 10;
+    int stacks = 10;
+    numIndicies = ( slices * stacks + slices ) * 6;
+    sphere_vao = SolidSphere( 4., slices, stacks);
+
 }
 
 // Drawing routine.
@@ -151,17 +228,21 @@ void drawScene(void) {
     GLboolean transpose = GL_FALSE;
 
     glUseProgram(p1_id);
-    glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
+    //glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
     glEnableVertexAttribArray(vertex_id);
-    glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
+    //glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
     glEnableVertexAttribArray(normal_id);
 
     glUniformMatrix4fv(matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
     glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
     glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
 
-    //glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
-    glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);
+    ////glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
+    //glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);
+
+
+    glBindVertexArray(sphere_vao);
+    glDrawElements(GL_TRIANGLES, numIndicies, GL_UNSIGNED_INT, 0);
 
     glDisableVertexAttribArray(vertex_id);
     glDisableVertexAttribArray(normal_id);
@@ -224,3 +305,5 @@ int main(int argc, char **argv) {
     glutMainLoop();
     return 0;
 }
+
+

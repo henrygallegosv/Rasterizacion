@@ -39,8 +39,15 @@
 using namespace std;
 using namespace glm;
 
-enum object {HEMISPHERE, TORUS}; // VAO ids.
-enum buffer {HEM_VERTICES, HEM_INDICES, TOR_VERTICES, TOR_INDICES}; // VBO ids.
+//enum object {HEMISPHERE, TORUS}; // VAO ids.
+static unsigned int HEMISPHERE = 0;
+static unsigned int TORUS = 1;
+
+//enum buffer {HEM_VERTICES, HEM_INDICES, TOR_VERTICES, TOR_INDICES}; // VBO ids.
+static unsigned int HEM_VERTICES = 0;
+static unsigned int HEM_INDICES = 1;
+static unsigned int TOR_VERTICES = 2;
+static unsigned int TOR_INDICES = 3;
 
 // Globals.
 static float latAngle = 0.0; // Latitudinal angle.
@@ -81,6 +88,23 @@ static unsigned int
 
 static vec4 clipPlane = vec4(0.0, 0.0, 1.0, 25.0); // Clip plane coefficients.
 
+
+
+/* Link−edita shader */
+static void LinkProgram (GLuint id) {
+    GLint status;
+    glLinkProgram(id);
+    glGetProgramiv(id, GL_LINK_STATUS, &status);
+    if (!status) {
+        GLint len;
+        glGetProgramiv(id, GL_INFO_LOG_LENGTH, &len);
+        char* message = (char*) malloc(len*sizeof(char));
+        glGetProgramInfoLog(id, len, 0, message);
+        Error(message);
+        free(message);
+    }
+}
+
 // Initialization routine.
 void setup(void) 
 {
@@ -93,7 +117,8 @@ void setup(void)
    programId = glCreateProgram(); 
    glAttachShader(programId, vertexShaderId); 
    glAttachShader(programId, fragmentShaderId);    
-   glLinkProgram(programId); 
+   //glLinkProgram(programId);
+   LinkProgram(programId);
    glUseProgram(programId);  
 
    // Initialize hemishpere and torus.
@@ -279,9 +304,10 @@ int main(int argc, char **argv)
    printInteraction();
    glutInit(&argc, argv);
 
-   //glutInitContextVersion(4, 3);
-   glutInitContextProfile(GLUT_CORE_PROFILE);
-   glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+   //glutInitContextVersion(3, 3);
+   //glutInitContextProfile(GLUT_CORE_PROFILE);
+   //glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+   glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
 
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); 
    glutInitWindowSize(500, 500);
