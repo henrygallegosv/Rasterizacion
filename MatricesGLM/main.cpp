@@ -200,8 +200,8 @@ void setup(void) {
     matrix_view_id	= glGetUniformLocation(p1_id, "matrix_view");
     matrix_projection_id	= glGetUniformLocation(p1_id, "matrix_projection");
 
-    int slices = 10;
-    int stacks = 10;
+    int slices = 100;
+    int stacks = 100;
     numIndicies = ( slices * stacks + slices ) * 6;
     sphere_vao = SolidSphere( 4., slices, stacks);
 
@@ -223,7 +223,7 @@ void setup(void) {
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load("../earth_clouds.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("../luna_mapa.jpg", &width, &height, &nrChannels, 0);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);

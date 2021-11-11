@@ -16,12 +16,11 @@ void main()
 {
    mat4 mvp = matrix_projection * matrix_view * matrix_model;
 
-   posicion = mvp * vec4(aPos, 1.0);
-   gl_Position = posicion;
-
-   //normal = matrix_model * vec4(aNormal, 0.0);
+   gl_Position = mvp * vec4(aPos, 1.0);
+   posicion = matrix_model * vec4(aPos, 1.0);
+   normal = matrix_model * vec4(aNormal, 0.0);
    //normal = normalize(normal);
-   normal = vec4(aNormal, 1.0);
+   //normal = vec4(aNormal, 1.0);
 
    v2f_texcoord = in_texcoord;
 
