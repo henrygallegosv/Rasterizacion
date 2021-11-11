@@ -22,9 +22,9 @@ float camX, camZ;
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 GLint POSITION_ATTRIBUTE=0, NORMAL_ATTRIBUTE=1, TEXCOORD0_ATTRIBUTE=8;
-GLint sphere_vao;
-int numIndicies;
-unsigned int texture1, texture2;
+GLint luna_vao, tierra_vao;
+int luna_numIndices, tierra_numIndices;
+unsigned int luna_texture, tierra_texture;
 GLint textura1_id;
  //matrix_view;
 
@@ -202,8 +202,12 @@ void setup(void) {
 
     int slices = 100;
     int stacks = 100;
-    numIndicies = ( slices * stacks + slices ) * 6;
-    sphere_vao = SolidSphere( 4., slices, stacks);
+    luna_numIndices = ( slices * stacks + slices ) * 6;
+    luna_vao = SolidSphere( 2., slices, stacks);
+
+    tierra_numIndices = ( slices * stacks + slices ) * 6;
+    tierra_vao = SolidSphere( 6., slices, stacks);
+
 
 
     // load and create a texture
@@ -211,8 +215,8 @@ void setup(void) {
 
     // texture 1
     // ---------
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    glGenTextures(1, &luna_texture);
+    glBindTexture(GL_TEXTURE_2D, luna_texture);
     // set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -231,6 +235,30 @@ void setup(void) {
         std::cout << "Failed to load texture" << std::endl;
     }
     stbi_image_free(data);
+
+    // texture 2
+    // ---------
+    glGenTextures(1, &tierra_texture);
+    glBindTexture(GL_TEXTURE_2D, tierra_texture);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    //int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    data = stbi_load("../tierra_mapa.jpg", &width, &height, &nrChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
     glUniform1i(glGetUniformLocation(textura1_id, "texture0"), 0);
 }
 
@@ -252,10 +280,11 @@ void drawScene(void) {
     view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0,0,0), glm::vec3(0,1,0));
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-
     GLboolean transpose = GL_FALSE;
+
+    // LUNA
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, luna_texture);
 
     glUseProgram(p1_id);
     //glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
@@ -270,12 +299,41 @@ void drawScene(void) {
     ////glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
     //glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);
 
-
-    glBindVertexArray(sphere_vao);
-    glDrawElements(GL_TRIANGLES, numIndicies, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(luna_vao);
+    glDrawElements(GL_TRIANGLES, luna_numIndices, GL_UNSIGNED_INT, 0);
 
     glDisableVertexAttribArray(vertex_id);
     glDisableVertexAttribArray(normal_id);
+
+    // TIERRA
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tierra_texture);
+
+    glUseProgram(p1_id);
+    //glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
+    glEnableVertexAttribArray(vertex_id);
+    //glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
+    glEnableVertexAttribArray(normal_id);
+
+    matrix_model = glm::mat4(1.0f);
+    matrix_model = glm::translate(matrix_model, glm::vec3(10, 0, 0));
+    matrix_model = glm::scale(matrix_model, glm::vec3(escala, escala, escala));
+    matrix_model = glm::rotate(matrix_model, glm::radians(angulo_x), glm::vec3(1,0,0));
+
+    glUniformMatrix4fv(matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
+    glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
+    glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
+
+    ////glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
+    //glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);
+
+    glBindVertexArray(tierra_vao);
+    glDrawElements(GL_TRIANGLES, tierra_numIndices, GL_UNSIGNED_INT, 0);
+
+    glDisableVertexAttribArray(vertex_id);
+    glDisableVertexAttribArray(normal_id);
+
+
     glutSwapBuffers();
 }
 
