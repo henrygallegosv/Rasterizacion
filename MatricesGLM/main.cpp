@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "stb_image.h"
 
 using namespace std;
 
@@ -23,6 +24,8 @@ const unsigned int SCR_HEIGHT = 600;
 GLint POSITION_ATTRIBUTE=0, NORMAL_ATTRIBUTE=1, TEXCOORD0_ATTRIBUTE=8;
 GLint sphere_vao;
 int numIndicies;
+unsigned int texture1, texture2;
+GLint textura1_id;
  //matrix_view;
 
 
@@ -147,8 +150,8 @@ GLuint SolidSphere( float radius, int slices, int stacks ) {
     glGenVertexArrays( 1, &vao );
     glBindVertexArray( vao );
 
-    GLuint vbos[3];
-    glGenBuffers( 3, vbos );
+    GLuint vbos[4];
+    glGenBuffers( 4, vbos );
 
     glBindBuffer( GL_ARRAY_BUFFER, vbos[0] );
     glBufferData( GL_ARRAY_BUFFER, positions.size() * sizeof(vec3), positions.data(), GL_STATIC_DRAW );
@@ -160,12 +163,12 @@ GLuint SolidSphere( float radius, int slices, int stacks ) {
     glVertexAttribPointer( NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_TRUE, 0, (void*)0 );
     glEnableVertexAttribArray( NORMAL_ATTRIBUTE );
 
-    //glBindBuffer( GL_ARRAY_BUFFER, vbos[2] );
-    //glBufferData( GL_ARRAY_BUFFER, textureCoords.size() * sizeof(vec2), textureCoords.data(), GL_STATIC_DRAW );
-    //glVertexAttribPointer( TEXCOORD0_ATTRIBUTE, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
-    //glEnableVertexAttribArray( TEXCOORD0_ATTRIBUTE );
+    glBindBuffer( GL_ARRAY_BUFFER, vbos[2] );
+    glBufferData( GL_ARRAY_BUFFER, textureCoords.size() * sizeof(vec2), textureCoords.data(), GL_STATIC_DRAW );
+    glVertexAttribPointer( TEXCOORD0_ATTRIBUTE, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
+    glEnableVertexAttribArray( TEXCOORD0_ATTRIBUTE );
 
-    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vbos[2] );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vbos[3] );
     glBufferData( GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(GLuint), indicies.data(), GL_STATIC_DRAW );
     glBindVertexArray( 0 );
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
@@ -188,7 +191,7 @@ void setup(void) {
 
     glEnableClientState(GL_VERTEX_ARRAY); // Enable vertex array.
     glEnable(GL_DEPTH_TEST);
-    CreateShaderProgram("../basico1.vs","../basico1.fs", p1_id);
+    CreateShaderProgram("../basico_textura.vs","../basico_textura.fs", p1_id);
     glBindAttribLocation(p1_id, vertex_id, "aPos");
     glBindAttribLocation(p1_id, normal_id, "aNormal");
     cout << "aPos: " << vertex_id << endl;
@@ -202,6 +205,33 @@ void setup(void) {
     numIndicies = ( slices * stacks + slices ) * 6;
     sphere_vao = SolidSphere( 4., slices, stacks);
 
+
+    // load and create a texture
+    // -------------------------
+
+    // texture 1
+    // ---------
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    unsigned char *data = stbi_load("../earth_clouds.jpg", &width, &height, &nrChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+    glUniform1i(glGetUniformLocation(textura1_id, "texture0"), 0);
 }
 
 // Drawing routine.
@@ -220,10 +250,10 @@ void drawScene(void) {
 
     //view = glm::translate(view, glm::vec3(0.,0., -10.));
     view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0,0,0), glm::vec3(0,1,0));
-
-
-
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
 
     GLboolean transpose = GL_FALSE;
 

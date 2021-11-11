@@ -196,6 +196,33 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\MatricesGLM.dir\build.make CMakeFiles/MatricesGLM.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+stb_image.obj: stb_image.cpp.obj
+
+.PHONY : stb_image.obj
+
+# target to build an object file
+stb_image.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MatricesGLM.dir\build.make CMakeFiles/MatricesGLM.dir/stb_image.cpp.obj
+.PHONY : stb_image.cpp.obj
+
+stb_image.i: stb_image.cpp.i
+
+.PHONY : stb_image.i
+
+# target to preprocess a source file
+stb_image.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MatricesGLM.dir\build.make CMakeFiles/MatricesGLM.dir/stb_image.cpp.i
+.PHONY : stb_image.cpp.i
+
+stb_image.s: stb_image.cpp.s
+
+.PHONY : stb_image.s
+
+# target to generate assembly for a file
+stb_image.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MatricesGLM.dir\build.make CMakeFiles/MatricesGLM.dir/stb_image.cpp.s
+.PHONY : stb_image.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -211,6 +238,9 @@ help:
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
+	@echo ... stb_image.obj
+	@echo ... stb_image.i
+	@echo ... stb_image.s
 .PHONY : help
 
 

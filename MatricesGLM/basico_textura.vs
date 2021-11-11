@@ -1,6 +1,7 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
+layout (location=8) in vec2 in_texcoord;
 
 uniform mat4 matrix_model;
 uniform mat4 matrix_view;
@@ -9,6 +10,7 @@ uniform mat4 matrix_projection;
 out vec4 normal;
 out vec4 posicion;
 //out vec3 colorFinal;
+out vec2 v2f_texcoord;
 
 void main()
 {
@@ -20,6 +22,8 @@ void main()
    //normal = matrix_model * vec4(aNormal, 0.0);
    //normal = normalize(normal);
    normal = vec4(aNormal, 1.0);
+
+   v2f_texcoord = in_texcoord;
 
    // iluminacion difusa en vertex shader
    //vec3 posicionLuz = vec3(1., 1., -10.);

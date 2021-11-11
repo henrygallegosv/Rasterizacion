@@ -6,4 +6,8 @@ CMakeFiles/MatricesGLM.dir/glut_ply.cpp.obj: ../glut_ply.h
 
 CMakeFiles/MatricesGLM.dir/main.cpp.obj: ../glut_ply.h
 CMakeFiles/MatricesGLM.dir/main.cpp.obj: ../main.cpp
+CMakeFiles/MatricesGLM.dir/main.cpp.obj: ../stb_image.h
+
+CMakeFiles/MatricesGLM.dir/stb_image.cpp.obj: ../stb_image.cpp
+CMakeFiles/MatricesGLM.dir/stb_image.cpp.obj: ../stb_image.h
 

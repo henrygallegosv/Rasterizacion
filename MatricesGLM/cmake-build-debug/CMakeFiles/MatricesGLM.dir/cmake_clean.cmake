@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/MatricesGLM.dir/glut_ply.cpp.obj"
   "CMakeFiles/MatricesGLM.dir/main.cpp.obj"
+  "CMakeFiles/MatricesGLM.dir/stb_image.cpp.obj"
   "MatricesGLM.exe"
   "MatricesGLM.exe.manifest"
   "MatricesGLM.pdb"

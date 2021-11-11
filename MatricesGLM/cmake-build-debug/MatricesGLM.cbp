@@ -89,6 +89,12 @@
 		<Unit filename="D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/main.cpp">
 			<Option target="MatricesGLM"/>
 		</Unit>
+		<Unit filename="D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/stb_image.cpp">
+			<Option target="MatricesGLM"/>
+		</Unit>
+		<Unit filename="D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/stb_image.h">
+			<Option target="MatricesGLM"/>
+		</Unit>
 		<Unit filename="D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

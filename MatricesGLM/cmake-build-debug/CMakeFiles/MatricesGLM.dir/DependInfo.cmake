@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.cpp" "D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/cmake-build-debug/CMakeFiles/MatricesGLM.dir/glut_ply.cpp.obj"
   "D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/main.cpp" "D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/cmake-build-debug/CMakeFiles/MatricesGLM.dir/main.cpp.obj"
+  "D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/stb_image.cpp" "D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/cmake-build-debug/CMakeFiles/MatricesGLM.dir/stb_image.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

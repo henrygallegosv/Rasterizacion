@@ -6,29 +6,37 @@
 
 #IncludeRegexTransform: 
 
-D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.h
-GL/gl.h
--
-GL/glu.h
--
-GL/freeglut.h
--
-vector
--
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/stb_image.cpp
+stb_image.h
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/stb_image.h
 
-D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/main.cpp
-iostream
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/stb_image.h
+stb_image.h
+D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/stb_image.h
+stdio.h
 -
-GL/glew.h
+stdarg.h
 -
-GL/freeglut.h
+stddef.h
 -
-glut_ply.h
-D:/workspace/CG20212-Rasterizacion/Rasterizacion/MatricesGLM/glut_ply.h
-glm/glm.hpp
+stdlib.h
 -
-glm/gtc/matrix_transform.hpp
+string.h
 -
-glm/gtc/type_ptr.hpp
+limits.h
+-
+math.h
+-
+stdio.h
+-
+assert.h
+-
+stdint.h
+-
+emmintrin.h
+-
+intrin.h
+-
+arm_neon.h
 -
 
