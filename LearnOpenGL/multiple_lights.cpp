@@ -173,7 +173,7 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // load textures (we now use a utility function to keep the code more organized)
+    // load textures (we now use a utility function to keep the code more organizasssaaaased)
     // -----------------------------------------------------------------------------
     unsigned int diffuseMap = loadTexture("../resources/textures/container2.png");
     unsigned int specularMap = loadTexture("../resources/textures/container2_specular.png");

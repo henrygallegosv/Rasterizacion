@@ -25,8 +25,14 @@ GLint POSITION_ATTRIBUTE=0, NORMAL_ATTRIBUTE=1, TEXCOORD0_ATTRIBUTE=8;
 GLint luna_vao, tierra_vao;
 int luna_numIndices, tierra_numIndices;
 unsigned int luna_texture, tierra_texture;
-GLint textura1_id;
+GLint textura1_id, ID;
  //matrix_view;
+
+// positions of the point lights
+glm::vec3 pointLightPositions[] = {
+        glm::vec3( 1.f,  1.f,  10.f),
+        glm::vec3( 2.f, 10.f, 2.0f),
+};
 
 
 char* readShader(char* aShaderFile)
@@ -191,7 +197,7 @@ void setup(void) {
 
     glEnableClientState(GL_VERTEX_ARRAY); // Enable vertex array.
     glEnable(GL_DEPTH_TEST);
-    CreateShaderProgram("../basico_textura.vs","../basico_textura.fs", p1_id);
+    CreateShaderProgram("../basico_textura_luces.vs","../basico_textura_luces.fs", p1_id);
     glBindAttribLocation(p1_id, vertex_id, "aPos");
     glBindAttribLocation(p1_id, normal_id, "aNormal");
     cout << "aPos: " << vertex_id << endl;
@@ -267,6 +273,23 @@ void drawScene(void) {
     int vp[4];
     glGetIntegerv(GL_VIEWPORT, vp);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // point light 1
+    //lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+    glUniform3fv(glGetUniformLocation(ID, "pointLights[0].position"), 1, &pointLightPositions[0][0]);
+    //lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+    glUniform3f(glGetUniformLocation(ID, "pointLights[0].ambient"), 0.05f, 0.05f, 0.05f);
+    //lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+    glUniform3f(glGetUniformLocation(ID, "pointLights[0].diffuse"), 0.8f, 0.8f, 0.8f);
+
+    // point light 2
+    //lightingShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+    glUniform3fv(glGetUniformLocation(ID, "pointLights[1].position"), 1, &pointLightPositions[1][0]);
+    //lightingShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+    glUniform3f(glGetUniformLocation(ID, "pointLights[1].ambient"), 0.05f, 0.05f, 0.05f);
+    //lightingShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+    glUniform3f(glGetUniformLocation(ID, "pointLights[1].diffuse"), 0.8f, 0.8f, 0.8f);
+
 
     glm::mat4 matrix_model = glm::mat4(1.0f);
     matrix_model = glm::translate(matrix_model, glm::vec3(tras_x, 0, 0));
