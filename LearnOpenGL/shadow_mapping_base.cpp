@@ -147,7 +147,7 @@ int main()
     shader.setInt("diffuseTexture", 0);
     shader.setInt("shadowMap", 1);
     debugDepthQuad.use();
-    debugDepthQuad.setInt("depthMap", sasss0);
+    debugDepthQuad.setInt("depthMap", 0);
 
     // lighting info
     // -------------
