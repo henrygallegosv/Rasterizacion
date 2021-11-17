@@ -54,5 +54,5 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos) {
     vec3 ambient = light.ambient * vec3(texture(textura0, v2f_texcoord));
     vec3 diffuse = light.diffuse * diff * vec3(texture(textura0, v2f_texcoord));
     return (ambient + diffuse);
-
+    //return light.diffuse;
 }
