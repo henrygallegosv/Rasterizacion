@@ -31,10 +31,11 @@ int luna_numIndices, tierra_numIndices;
 unsigned int luna_texture, tierra_texture;
 GLint textura1_id, id_pos1, id_amb1, id_dif1, id_pos2, id_amb2, id_dif2;
  //matrix_view;
+glm::vec3 camara_posicion = glm::vec3(camX, 0.0f, camZ);
 
 // positions of the point lights
 glm::vec3 pointLightPositions[] = {
-        glm::vec3( 1.f,  1.f,  10.f),
+        glm::vec3( 5.f,  1.f,  10.f),
         glm::vec3( 10.f, 10.f, 2.0f),
 };
 
@@ -325,6 +326,9 @@ void drawScene(void) {
     glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
     glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
 
+    glUniform3fv(glGetUniformLocation(p1_id, "viewPos"), 1, &camara_posicion[0]);
+    glUniform1f(glGetUniformLocation(p1_id, "shininess"), 32.0f);
+
     // point light 1
     //lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
     glUniform3fv(glGetUniformLocation(p1_id, "pointLights[0].position"), 1, &pointLightPositions[0][0]);
@@ -332,6 +336,7 @@ void drawScene(void) {
     glUniform3f(glGetUniformLocation(p1_id, "pointLights[0].ambient"), 0.05f, 0.05f, 0.05f);
     //lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
     glUniform3f(glGetUniformLocation(p1_id, "pointLights[0].diffuse"), 0.8f, 0.8f, 0.8f);
+    glUniform3f(glGetUniformLocation(p1_id, "pointLights[0].specular"), 1.0f, 1.0f, 1.0f);
 
     // point light 2
     //lightingShader.setVec3("pointLights[1].position", pointLightPositions[1]);
@@ -340,7 +345,7 @@ void drawScene(void) {
     glUniform3f(glGetUniformLocation(p1_id, "pointLights[1].ambient"), 0.05f, 0.05f, 0.05f);
     //lightingShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
     glUniform3f(glGetUniformLocation(p1_id, "pointLights[1].diffuse"), 0.8f, 0.8f, 0.8f);
-
+    glUniform3f(glGetUniformLocation(p1_id, "pointLights[1].specular"), 1.0f, 1.0f, 1.0f);
 
     glEnableVertexAttribArray(vertex_id);
     glEnableVertexAttribArray(normal_id);
