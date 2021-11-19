@@ -13,16 +13,20 @@ using namespace std;
 Model_PLY model;
 char *archivo = "../models/cow.ply";
 
-GLuint p1_id;
+GLuint p1_id, p2_id;
 GLint vertex_id = 0, normal_id = 1;
 GLuint matrix_model_id, matrix_view_id, matrix_projection_id;
+
+GLint p2_vertex_id = 0, p2_normal_id = 1;
+GLuint p2_matrix_model_id, p2_matrix_view_id, p2_matrix_projection_id;
+
 float angulo_x;
 float escala, tras_x;
 float camX, camZ;
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 GLint POSITION_ATTRIBUTE=0, NORMAL_ATTRIBUTE=1, TEXCOORD0_ATTRIBUTE=8;
-GLint luna_vao, tierra_vao;
+GLint luna_vao, tierra_vao, model_vao;
 int luna_numIndices, tierra_numIndices;
 unsigned int luna_texture, tierra_texture;
 GLint textura1_id, id_pos1, id_amb1, id_dif1, id_pos2, id_amb2, id_dif2;
@@ -198,6 +202,14 @@ void setup(void) {
     glEnableClientState(GL_VERTEX_ARRAY); // Enable vertex array.
     glEnable(GL_DEPTH_TEST);
     CreateShaderProgram("../basico_textura_luces.vs","../basico_textura_luces.fs", p1_id);
+    CreateShaderProgram("../basico1.vs","../basico1.fs", p2_id);
+    glBindAttribLocation(p2_id, p2_vertex_id, "aPos");
+    glBindAttribLocation(p2_id, p2_normal_id, "aNormal");
+    p2_matrix_model_id	= glGetUniformLocation(p2_id, "matrix_model");
+    p2_matrix_view_id	= glGetUniformLocation(p2_id, "matrix_view");
+    p2_matrix_projection_id	= glGetUniformLocation(p2_id, "matrix_projection");
+
+
     glBindAttribLocation(p1_id, vertex_id, "aPos");
     glBindAttribLocation(p1_id, normal_id, "aNormal");
     cout << "aPos: " << vertex_id << endl;
@@ -215,6 +227,27 @@ void setup(void) {
     tierra_vao = SolidSphere( 6., slices, stacks);
 
 
+    GLuint vao;
+    glGenVertexArrays( 1, &vao );
+    glBindVertexArray( vao );
+    GLuint vbos[3];
+    glGenBuffers( 3, vbos );
+    glBindBuffer( GL_ARRAY_BUFFER, vbos[0] );
+    glBufferData( GL_ARRAY_BUFFER, model.cantVertices * sizeof(float) * 3, model.Vertices, GL_STATIC_DRAW );
+    glVertexAttribPointer( POSITION_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray( POSITION_ATTRIBUTE );
+
+    glBindBuffer( GL_ARRAY_BUFFER, vbos[1] );
+    glBufferData( GL_ARRAY_BUFFER, model.cantVertices * sizeof(float) * 3, model.Normales, GL_STATIC_DRAW );
+    glVertexAttribPointer( NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_TRUE, 0, (void*)0 );
+    glEnableVertexAttribArray( NORMAL_ATTRIBUTE );
+
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vbos[3] );
+    glBufferData( GL_ELEMENT_ARRAY_BUFFER, model.cantIndices * sizeof(GLuint) * 3, model.Indices, GL_STATIC_DRAW );
+    glBindVertexArray( 0 );
+    glBindBuffer( GL_ARRAY_BUFFER, 0 );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+    model_vao = vao;
 
     // load and create a texture
     // -------------------------
@@ -273,7 +306,24 @@ void drawScene(void) {
     int vp[4];
     glGetIntegerv(GL_VIEWPORT, vp);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glm::mat4 matrix_model = glm::mat4(1.0f);
+    matrix_model = glm::translate(matrix_model, glm::vec3(tras_x, 0, 0));
+    matrix_model = glm::scale(matrix_model, glm::vec3(escala, escala, escala));
+    matrix_model = glm::rotate(matrix_model, glm::radians(angulo_x), glm::vec3(1,0,0));
+
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+
+    //view = glm::translate(view, glm::vec3(0.,0., -10.));
+    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0,0,0), glm::vec3(0,1,0));
+    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+    GLboolean transpose = GL_FALSE;
+
     glUseProgram(p1_id);
+    glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
+    glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
 
     // point light 1
     //lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
@@ -292,70 +342,60 @@ void drawScene(void) {
     glUniform3f(glGetUniformLocation(p1_id, "pointLights[1].diffuse"), 0.8f, 0.8f, 0.8f);
 
 
-    glm::mat4 matrix_model = glm::mat4(1.0f);
-    matrix_model = glm::translate(matrix_model, glm::vec3(tras_x, 0, 0));
-    matrix_model = glm::scale(matrix_model, glm::vec3(escala, escala, escala));
-    matrix_model = glm::rotate(matrix_model, glm::radians(angulo_x), glm::vec3(1,0,0));
-
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
-
-    //view = glm::translate(view, glm::vec3(0.,0., -10.));
-    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0,0,0), glm::vec3(0,1,0));
-    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
-    GLboolean transpose = GL_FALSE;
+    glEnableVertexAttribArray(vertex_id);
+    glEnableVertexAttribArray(normal_id);
 
     // LUNA
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, luna_texture);
-
-
-    //glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
-    glEnableVertexAttribArray(vertex_id);
-    //glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
-    glEnableVertexAttribArray(normal_id);
-
     glUniformMatrix4fv(matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
-    glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
-    glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
-
-    ////glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
-    //glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);
-
     glBindVertexArray(luna_vao);
     glDrawElements(GL_TRIANGLES, luna_numIndices, GL_UNSIGNED_INT, 0);
-
-    glDisableVertexAttribArray(vertex_id);
-    glDisableVertexAttribArray(normal_id);
+    //glDisableVertexAttribArray(vertex_id);
+    //glDisableVertexAttribArray(normal_id);
 
     // TIERRA
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tierra_texture);
 
-    //glVertexAttribPointer(vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
-    glEnableVertexAttribArray(vertex_id);
-    //glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
-    glEnableVertexAttribArray(normal_id);
-
+    //glEnableVertexAttribArray(vertex_id);
+    //glEnableVertexAttribArray(normal_id);
     matrix_model = glm::mat4(1.0f);
     matrix_model = glm::translate(matrix_model, glm::vec3(10, 0, 0));
     matrix_model = glm::scale(matrix_model, glm::vec3(escala, escala, escala));
     matrix_model = glm::rotate(matrix_model, glm::radians(angulo_x), glm::vec3(1,0,0));
-
     glUniformMatrix4fv(matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
-    glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
-    glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
-
-    ////glDrawArrays(GL_TRIANGLES, 0, model.cantVertices);
-    //glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);
-
+    //glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
+    //glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
     glBindVertexArray(tierra_vao);
     glDrawElements(GL_TRIANGLES, tierra_numIndices, GL_UNSIGNED_INT, 0);
 
     glDisableVertexAttribArray(vertex_id);
     glDisableVertexAttribArray(normal_id);
 
+    glUseProgram(p2_id);
+    glEnableVertexAttribArray(p2_vertex_id);
+    glEnableVertexAttribArray(p2_normal_id);
+
+    matrix_model = glm::mat4(1.0f);
+    matrix_model = glm::translate(matrix_model, glm::vec3(-4, 4, 0));
+    matrix_model = glm::scale(matrix_model, glm::vec3(escala*10, escala*10, escala*10));
+    glUniformMatrix4fv(p2_matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
+    glUniformMatrix4fv(p2_matrix_view_id, 1, transpose, glm::value_ptr(view));
+    glUniformMatrix4fv(p2_matrix_projection_id, 1, transpose, glm::value_ptr(projection));
+
+    //glBindVertexArray( 0 );
+    // VACA
+    /*
+    glVertexAttribPointer(p2_vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
+    glVertexAttribPointer(p2_normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
+    glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, (const void *) model.Indices);
+*/
+    glBindVertexArray( model_vao);
+    glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, 0);
+
+    glDisableVertexAttribArray(p2_vertex_id);
+    glDisableVertexAttribArray(p2_normal_id);
 
     glutSwapBuffers();
 }
