@@ -13,12 +13,15 @@ using namespace std;
 Model_PLY model;
 char *archivo = "../models/cow.ply";
 
-GLuint p1_id, p2_id;
+GLuint p1_id, p2_id, p0_id, p3_id;
+GLuint p0_vertex_id=0, p0_textcoord_id = 1;
+
 GLint vertex_id = 0, normal_id = 1;
 GLuint matrix_model_id, matrix_view_id, matrix_projection_id;
 
 GLint p2_vertex_id = 0, p2_normal_id = 1;
 GLuint p2_matrix_model_id, p2_matrix_view_id, p2_matrix_projection_id;
+GLuint p3_matrix_model_id, p3_matrix_view_id, p3_matrix_projection_id;
 
 float angulo_x;
 float escala, tras_x;
@@ -28,7 +31,7 @@ const unsigned int SCR_HEIGHT = 600;
 GLint POSITION_ATTRIBUTE=0, NORMAL_ATTRIBUTE=1, TEXCOORD0_ATTRIBUTE=8;
 GLint luna_vao, tierra_vao, model_vao;
 int luna_numIndices, tierra_numIndices;
-unsigned int luna_texture, tierra_texture;
+unsigned int luna_texture, tierra_texture, fondo_texture;
 GLint textura1_id, id_pos1, id_amb1, id_dif1, id_pos2, id_amb2, id_dif2;
  //matrix_view;
 glm::vec3 camara_posicion = glm::vec3(camX, 0.0f, camZ);
@@ -38,6 +41,40 @@ glm::vec3 pointLightPositions[] = {
         glm::vec3( 5.f,  1.f,  10.f),
         glm::vec3( 10.f, 10.f, 2.0f),
 };
+
+
+// renderQuad() renders a 1x1 XY quad in NDC
+// -----------------------------------------
+unsigned int quadVAO = 0;
+unsigned int quadVBO;
+void renderQuad()
+{
+    if (quadVAO == 0)
+    {
+        float quadVertices[] = {
+                // positions        // texture Coords
+                -1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
+                -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
+                1.0f,  1.0f, -1.0f, 1.0f, 1.0f,
+                1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+        };
+        // setup plane VAO
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+}
+
+
 
 
 char* readShader(char* aShaderFile)
@@ -117,8 +154,47 @@ static void CreateShaderProgram (char* vertexShaderFile, char* fragmentShaderFil
     glAttachShader(p_id, v_id);
     glAttachShader(p_id, f_id);
     LinkProgram(p_id);
-
 }
+
+static void CreateShaderProgram (char* vertexShaderFile, char* fragmentShaderFile, char* geometryShaderFile, GLuint &p_id) {
+    char*	vertexShader   = readShader(vertexShaderFile);
+    char*	fragmentShader = readShader(fragmentShaderFile);
+    char*	geometryShader = readShader(geometryShaderFile);
+
+    /* vertex shader */
+    GLuint v_id = glCreateShader(GL_VERTEX_SHADER);
+    if (v_id == 0)
+        Error("Could not create vertex shader object");
+
+    glShaderSource(v_id, 1, (const char**) &vertexShader, 0);
+    CompileShader(v_id);
+
+    /* fragment shader */
+    GLuint f_id = glCreateShader(GL_FRAGMENT_SHADER);
+    if (f_id == 0)
+        Error("Could not create fragment shader object");
+
+    glShaderSource(f_id, 1, (const char**) &fragmentShader, 0);
+    CompileShader(f_id);
+
+    /* geometry shader */
+    GLuint g_id = glCreateShader(GL_GEOMETRY_SHADER);
+    if (g_id == 0)
+        Error("Could not create fragment shader object");
+
+    glShaderSource(g_id, 1, (const char**) &geometryShader, 0);
+    CompileShader(g_id);
+
+    /* program */
+    p_id = glCreateProgram();
+    if (p_id == 0)
+        Error("Could not create program object");
+    glAttachShader(p_id, v_id);
+    glAttachShader(p_id, f_id);
+    glAttachShader(p_id, g_id);
+    LinkProgram(p_id);
+}
+
 
 GLuint SolidSphere( float radius, int slices, int stacks ) {
     using namespace glm;
@@ -202,14 +278,22 @@ void setup(void) {
 
     glEnableClientState(GL_VERTEX_ARRAY); // Enable vertex array.
     glEnable(GL_DEPTH_TEST);
+    CreateShaderProgram("../basico_0.vs","../basico_0.fs", p0_id);
     CreateShaderProgram("../basico_textura_luces.vs","../basico_textura_luces.fs", p1_id);
     CreateShaderProgram("../basico1.vs","../basico1.fs", p2_id);
+    CreateShaderProgram("../9.3.normal_visualization.vs", "../9.3.normal_visualization.fs", "../9.3.normal_visualization.gs", p3_id);
+
+    glBindAttribLocation(p0_id, p0_vertex_id, "aPos");
+
     glBindAttribLocation(p2_id, p2_vertex_id, "aPos");
     glBindAttribLocation(p2_id, p2_normal_id, "aNormal");
     p2_matrix_model_id	= glGetUniformLocation(p2_id, "matrix_model");
     p2_matrix_view_id	= glGetUniformLocation(p2_id, "matrix_view");
     p2_matrix_projection_id	= glGetUniformLocation(p2_id, "matrix_projection");
 
+    p3_matrix_model_id	= glGetUniformLocation(p3_id, "model");
+    p3_matrix_view_id	= glGetUniformLocation(p3_id, "view");
+    p3_matrix_projection_id	= glGetUniformLocation(p3_id, "projection");
 
     glBindAttribLocation(p1_id, vertex_id, "aPos");
     glBindAttribLocation(p1_id, normal_id, "aNormal");
@@ -300,6 +384,31 @@ void setup(void) {
     stbi_image_free(data);
 
     glUniform1i(glGetUniformLocation(p1_id, "texture0"), 0);
+
+    // texture fondo
+    // ---------
+    glGenTextures(1, &fondo_texture);
+    glBindTexture(GL_TEXTURE_2D, fondo_texture);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    //int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    data = stbi_load("../oceano.jpg", &width, &height, &nrChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    glUniform1i(glGetUniformLocation(p0_id, "texture0"), 0);
 }
 
 // Drawing routine.
@@ -321,6 +430,8 @@ void drawScene(void) {
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
     GLboolean transpose = GL_FALSE;
+
+
 
     glUseProgram(p1_id);
     glUniformMatrix4fv(matrix_view_id, 1, transpose, glm::value_ptr(view));
@@ -356,6 +467,7 @@ void drawScene(void) {
     glUniformMatrix4fv(matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
     glBindVertexArray(luna_vao);
     glDrawElements(GL_TRIANGLES, luna_numIndices, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
     //glDisableVertexAttribArray(vertex_id);
     //glDisableVertexAttribArray(normal_id);
 
@@ -374,10 +486,11 @@ void drawScene(void) {
     //glUniformMatrix4fv(matrix_projection_id, 1, transpose, glm::value_ptr(projection));
     glBindVertexArray(tierra_vao);
     glDrawElements(GL_TRIANGLES, tierra_numIndices, GL_UNSIGNED_INT, 0);
-
+    glBindVertexArray(0);
     glDisableVertexAttribArray(vertex_id);
     glDisableVertexAttribArray(normal_id);
 
+    // VACA
     glUseProgram(p2_id);
     glEnableVertexAttribArray(p2_vertex_id);
     glEnableVertexAttribArray(p2_normal_id);
@@ -390,7 +503,6 @@ void drawScene(void) {
     glUniformMatrix4fv(p2_matrix_projection_id, 1, transpose, glm::value_ptr(projection));
 
     //glBindVertexArray( 0 );
-    // VACA
     /*
     glVertexAttribPointer(p2_vertex_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Vertices);
     glVertexAttribPointer(p2_normal_id, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), model.Normales);
@@ -398,9 +510,31 @@ void drawScene(void) {
 */
     glBindVertexArray( model_vao);
     glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, 0);
-
+    glBindVertexArray(0);
     glDisableVertexAttribArray(p2_vertex_id);
     glDisableVertexAttribArray(p2_normal_id);
+
+    glUseProgram(p3_id);
+    glEnableVertexAttribArray(p2_vertex_id);
+    glEnableVertexAttribArray(p2_normal_id);
+    glUniformMatrix4fv(p3_matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
+    glUniformMatrix4fv(p3_matrix_view_id, 1, transpose, glm::value_ptr(view));
+    glUniformMatrix4fv(p3_matrix_projection_id, 1, transpose, glm::value_ptr(projection));
+    glBindVertexArray( model_vao);
+    glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+    glDisableVertexAttribArray(p2_vertex_id);
+    glDisableVertexAttribArray(p2_normal_id);
+
+
+/*    glUseProgram(p0_id);
+    glEnableVertexAttribArray(p0_vertex_id);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, fondo_texture);
+    renderQuad();
+    glDisableVertexAttribArray(p0_vertex_id);
+
+*/
 
     glutSwapBuffers();
 }

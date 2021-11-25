@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <learnopengl/filesystem.h>
-#include <learnopengl/shader.h>
+//#include <learnopengl/filesystem.h>
+#include "shader.h"
 
 #include <iostream>
 
@@ -50,7 +50,7 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader shader("9.1.geometry_shader.vs", "9.1.geometry_shader.fs", "9.1.geometry_shader.gs");
+    Shader shader("../9.1.geometry_shader.vs", "../9.1.geometry_shader.fs", "../9.1.geometry_shader.gs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------

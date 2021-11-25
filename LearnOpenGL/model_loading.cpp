@@ -5,10 +5,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <learnopengl/filesystem.h>
-#include <learnopengl/shader_m.h>
-#include <learnopengl/camera.h>
-#include <learnopengl/model.h>
+//#include <learnopengl/filesystem.h>
+#include "shader_m.h"
+#include "camera.h"
+#include "model.h"
 
 #include <iostream>
 
@@ -78,11 +78,11 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
+    Shader ourShader("../1.model_loading.vs", "../1.model_loading.fs");
 
     // load models
     // -----------
-    Model ourModel(FileSystem::getPath("resources/objects/backpack/backpack.obj"));
+    Model ourModel("../resources/objects/backpack/backpack.obj");
 
     
     // draw in wireframe
