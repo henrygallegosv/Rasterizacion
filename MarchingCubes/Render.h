@@ -4,8 +4,8 @@
 #include "DistanceField.h"
 
 #include <queue>
-#include <glew.h>
-#include <freeglut/freeglut.h>
+#include <gl/glew.h>
+#include <gl/freeglut.h>
 
 #pragma comment(lib, "freeglut.lib")
 #pragma comment(lib, "glew32.lib")

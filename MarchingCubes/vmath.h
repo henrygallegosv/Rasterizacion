@@ -134,6 +134,8 @@ namespace VMATH_NAMESPACE
 #define DEG2RAD(x) ((x * M_PI) / 180.0)
 //#define EPSILON (4.37114e-07)
 
+#define FLT_MAX 9999999
+
 const double epsilon = 4.37114e-05;
 #define EPSILON epsilon
 

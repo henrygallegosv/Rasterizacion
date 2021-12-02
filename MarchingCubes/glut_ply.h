@@ -7,8 +7,8 @@
 */
 
 #include "Triangle.h"
-#include <glew.h>
-#include <freeglut/freeglut.h>
+#include <gl/glew.h>
+#include <gl/freeglut.h>
 #include <vector>
 #include "vmath.h"
 

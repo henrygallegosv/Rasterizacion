@@ -5,8 +5,8 @@ using namespace std;
 #ifndef _DISTANCE_FIELD_H_
 #define _DISTANCE_FIELD_H_
 
-#include <glew.h>
-#include <freeglut/freeglut.h>
+#include <gl/glew.h>
+#include <gl/freeglut.h>
 
 #include <vector>
 #include "Voxel.h"
@@ -379,11 +379,14 @@ void DistanceField::Process() {
 		vector<Voxel*> vVoxel;
 		Voxel *tmp;
 		// tmp = getPointerVoxel(Vector3i(2,1,2));
-		tmp = getPointerVoxel(getIdxVoxelOfPoint(Vector3f(2.f,2.f,2.f)));
+		Vector3f t1(2.f,2.f,2.f);
+		tmp = getPointerVoxel(getIdxVoxelOfPoint(t1));
 		tmp->distance = 0.0f;
 		tmp->state = VOXEL_FROZEN;
 		vVoxel.push_back(tmp);
-		tmp = getPointerVoxel(getIdxVoxelOfPoint(Vector3f(14.f,13.f,11.f)));
+
+		Vector3f t2(14.f,13.f,11.f);
+		tmp = getPointerVoxel(getIdxVoxelOfPoint(t2));
 		tmp->distance = 0.0f;
 		tmp->state = VOXEL_FROZEN;
 		vVoxel.push_back(tmp);
