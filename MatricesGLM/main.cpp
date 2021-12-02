@@ -495,10 +495,10 @@ void drawScene(void) {
     glEnableVertexAttribArray(p2_vertex_id);
     glEnableVertexAttribArray(p2_normal_id);
 
-    matrix_model = glm::mat4(1.0f);
-    matrix_model = glm::translate(matrix_model, glm::vec3(-4, 4, 0));
-    matrix_model = glm::scale(matrix_model, glm::vec3(escala*10, escala*10, escala*10));
-    glUniformMatrix4fv(p2_matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
+    glm::mat4 matrix_model2 = glm::mat4(1.0f);
+    matrix_model2 = glm::translate(matrix_model2, glm::vec3(-4, 4, 0));
+    matrix_model2 = glm::scale(matrix_model2, glm::vec3(escala*10, escala*10, escala*10));
+    glUniformMatrix4fv(p2_matrix_model_id, 1, transpose, glm::value_ptr(matrix_model2));
     glUniformMatrix4fv(p2_matrix_view_id, 1, transpose, glm::value_ptr(view));
     glUniformMatrix4fv(p2_matrix_projection_id, 1, transpose, glm::value_ptr(projection));
 
@@ -520,8 +520,11 @@ void drawScene(void) {
     glUniformMatrix4fv(p3_matrix_model_id, 1, transpose, glm::value_ptr(matrix_model));
     glUniformMatrix4fv(p3_matrix_view_id, 1, transpose, glm::value_ptr(view));
     glUniformMatrix4fv(p3_matrix_projection_id, 1, transpose, glm::value_ptr(projection));
-    glBindVertexArray( model_vao);
-    glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, 0);
+    //glBindVertexArray( model_vao);
+    //glDrawElements(GL_TRIANGLES, model.cantIndices * 3, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(tierra_vao);
+    glDrawElements(GL_TRIANGLES, tierra_numIndices, GL_UNSIGNED_INT, 0);
+
     glBindVertexArray(0);
     glDisableVertexAttribArray(p2_vertex_id);
     glDisableVertexAttribArray(p2_normal_id);

@@ -22,6 +22,10 @@ balonTorus/cmake-build-debug/
 balonTorus/.idea/
 balonTorus/.vscode/
 
+MarchingCubes/cmake-build-debug/
+MarchingCubes/.idea/
+MarchingCubes/.vscode/
+
 # Prerequisites
 *.d
 
